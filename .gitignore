@@ -1,0 +1,20 @@
+# Rust build artifacts
+/target/
+
+# Tantivy index (generated, not source)
+/index/
+
+# User-provided documents (not for repo)
+/corpus/
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor-specific
+*.swp
+.idea/
+.vscode/

@@ -17,6 +17,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     // Initialize a new empty index
+    #[command(about = "Initialize a new empty Tantivy index (default directory: ./index)")]
     InitIndex {
         #[arg(default_value = "index")]
         index_dir: std::path::PathBuf,

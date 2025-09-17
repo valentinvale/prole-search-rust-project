@@ -5,6 +5,7 @@ pub fn build_schema() -> Schema {
     sb.add_text_field("id", STRING | STORED);
     sb.add_text_field("title", TEXT | STORED);
     sb.add_text_field("author", TEXT | STORED);
+    sb.add_text_field("language", STRING | STORED);
     sb.add_text_field("author_exact", STRING | STORED);
     sb.add_i64_field("year", FAST | STORED);
     sb.add_facet_field("tags", FacetOptions::default());

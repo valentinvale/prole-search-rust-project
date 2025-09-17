@@ -1,5 +1,5 @@
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{Command, Parser, Subcommand}; // maybe use Command later for more customization
 
 
 mod utils;
@@ -21,6 +21,16 @@ enum Commands {
     InitIndex {
         #[arg(default_value = "index")]
         index_dir: std::path::PathBuf,
+    },
+
+    // Ingest documents from a directory into the index
+    #[command(about = "Ingest documents from a directory into the index (default directory: ./corpus, default index directory: ./index)")]
+    Index {
+        #[arg(default_value = "corpus")]
+        corpus_dir: std::path::PathBuf,
+
+        #[arg(default_value = "index")]
+        index_dir: std::path::PathBuf,
     }
 }
 
@@ -32,6 +42,9 @@ fn main() -> Result<()> {
     match cli.cmd {
         Commands::InitIndex { index_dir } => {
             cmd::init::run(&index_dir)?;
+        },
+        Commands::Index { corpus_dir, index_dir } => {
+            cmd::index::run(&corpus_dir, &index_dir)?;
         }
     }
 

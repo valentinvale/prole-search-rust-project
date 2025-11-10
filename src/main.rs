@@ -31,6 +31,24 @@ enum Commands {
 
         #[arg(default_value = "index")]
         index_dir: std::path::PathBuf,
+    },
+
+    // Search command
+    #[command(about = "Search the index")]
+    Search {
+        query: String,
+
+        #[arg(long, default_value = "index")]
+        index_dir: std::path::PathBuf,
+
+        #[arg(long, default_value_t = 10)]
+        limit: usize,
+
+        #[arg(long, default_value = "title,body,author")]
+        fields: String,
+
+        #[arg(long, default_value_t = 0)]
+        offset: usize,
     }
 }
 
@@ -45,7 +63,10 @@ fn main() -> Result<()> {
         },
         Commands::Index { corpus_dir, index_dir } => {
             cmd::index::run(&corpus_dir, &index_dir)?;
-        }
+        },
+        Commands::Search { query, index_dir, limit, fields, offset } => {
+            cmd::search::run(&query, &index_dir, limit, &fields, offset)?;
+        },
     }
 
     Ok(())

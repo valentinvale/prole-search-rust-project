@@ -7,6 +7,9 @@
 # User-provided documents (not for repo)
 /corpus/
 
+# to do txt file
+idei.txt
+
 # Logs
 *.log
 

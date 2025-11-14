@@ -44,7 +44,7 @@ enum Commands {
         #[arg(long, default_value_t = 10)]
         limit: usize,
 
-        #[arg(long, default_value = "title,body,author")]
+        #[arg(long, default_value = "title,content,author")]
         fields: String,
 
         #[arg(long, default_value_t = 0)]

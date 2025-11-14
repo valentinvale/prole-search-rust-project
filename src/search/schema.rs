@@ -9,6 +9,6 @@ pub fn build_schema() -> Schema {
     sb.add_text_field("author_exact", STRING | STORED);
     sb.add_i64_field("year", FAST | STORED);
     sb.add_facet_field("tags", FacetOptions::default());
-    sb.add_text_field("content", TEXT);
+    sb.add_text_field("content", TEXT | STORED);
     sb.build()
 }

@@ -1,10 +1,11 @@
 use anyhow::Result;
-use clap::{Command, Parser, Subcommand}; // maybe use Command later for more customization
+use clap::{Parser, Subcommand}; // maybe use Command later for more customization
 
 
 mod utils;
 mod search;
 mod cmd;
+mod ingest;
 
 
 #[derive(Parser)]

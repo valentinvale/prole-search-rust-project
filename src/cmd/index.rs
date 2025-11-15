@@ -1,9 +1,10 @@
 use anyhow::{Context, Result};
 use walkdir::WalkDir;
-use std::{fs, path::Path};
+use std::{path::Path};
 use tantivy::{doc, ReloadPolicy};
 
 use crate::search::{open::open_or_create_index, schema::build_schema};
+use crate::ingest::{self, IngestedDoc};
 
 
 pub fn run(corpus_dir: &Path, index_dir: &Path) -> Result<()>{
@@ -26,19 +27,16 @@ pub fn run(corpus_dir: &Path, index_dir: &Path) -> Result<()>{
 
     for entry in WalkDir::new(corpus_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
-        let is_txt = path.is_file()
-            && path.extension()
-                .and_then(|s| s.to_str())
-                .map(|ext| ext.eq_ignore_ascii_case("txt"))
-                .unwrap_or(false);
+        
+        let ingested_document = match ingest::ingest_path(path)? {
+            Some(doc) => doc,
+            None => continue
+        };
 
-        if !is_txt{
-            continue;
-        } 
-
-        let bytes = fs::read(path)
-            .with_context(|| format!("Reading {}", path.display()))?;
-        let content = String::from_utf8_lossy(&bytes).into_owned(); // maybe add smart decoding later
+        let content = match ingested_document {
+            IngestedDoc::Text { content } => content,
+            IngestedDoc::Pdf { content } => content
+        };
         
         let title = path.file_stem()
             .and_then(|s| s.to_str())

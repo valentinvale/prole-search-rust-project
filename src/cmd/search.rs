@@ -1,10 +1,8 @@
-use anyhow::{Context, Result};
-use std::path::Path;
-use tantivy::{
-    Document, Index, SnippetGenerator, TantivyDocument, collector::{Count, TopDocs}, query::QueryParser, schema::{Field, Value}
-};
+use anyhow::{Context};
 
-use crate::search::schema;
+use tantivy::{
+    Index, SnippetGenerator, TantivyDocument, collector::{Count, TopDocs}, query::QueryParser, schema::{Field, Value}
+};
 
 
 pub fn get_string(doc: &TantivyDocument, f: Field) -> Option<&str>{

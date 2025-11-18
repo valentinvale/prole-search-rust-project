@@ -6,10 +6,14 @@ use tantivy::{doc, ReloadPolicy};
 use crate::search::{open::open_or_create_index, schema::build_schema};
 use crate::ingest::{self, IngestedDoc};
 
+use super::indexed_store::IndexedStore;
 
-pub fn run(corpus_dir: &Path, index_dir: &Path) -> Result<()>{
+pub fn run(corpus_dir: &Path, index_dir: &Path, update: bool) -> Result<()>{
     let schema = build_schema();
     let index = open_or_create_index(index_dir, schema)?;
+
+    let store_file = index_dir.join(".ingested.json");
+    let mut store = IndexedStore::load(&store_file)?;
 
     let mut writer = index.writer(50_000_000)?;
     let sch = index.schema();
@@ -27,6 +31,15 @@ pub fn run(corpus_dir: &Path, index_dir: &Path) -> Result<()>{
 
     for entry in WalkDir::new(corpus_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
+
+        if !path.is_file() {
+            continue;
+        }
+
+        if update && store.is_indexed(path) {
+            println!("Skipping (already indexed): {}", path.display());
+            continue;
+        }
         
         let ingested_document = match ingest::ingest_path(path)? {
             Some(doc) => doc,
@@ -65,9 +78,13 @@ pub fn run(corpus_dir: &Path, index_dir: &Path) -> Result<()>{
             .try_into()?
             .reload()?;
 
-        println!("Indexed {} document(s).", count);
+
+        store.mark_as_indexed(path);
         
 
     }
+
+    store.save(&store_file)?;
+    println!("Indexed {} document(s).", count);
     Ok(())
 }

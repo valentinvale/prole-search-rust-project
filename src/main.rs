@@ -32,6 +32,9 @@ enum Commands {
 
         #[arg(default_value = "index")]
         index_dir: std::path::PathBuf,
+
+        #[arg(short, long)]
+        update: bool,
     },
 
     // Search command
@@ -62,8 +65,8 @@ fn main() -> Result<()> {
         Commands::InitIndex { index_dir } => {
             cmd::init::run(&index_dir)?;
         },
-        Commands::Index { corpus_dir, index_dir } => {
-            cmd::index::run(&corpus_dir, &index_dir)?;
+        Commands::Index { corpus_dir, index_dir, update } => {
+            cmd::index::run(&corpus_dir, &index_dir, update)?;
         },
         Commands::Search { query, index_dir, limit, fields, offset } => {
             cmd::search::run(&query, &index_dir, limit, &fields, offset)?;
